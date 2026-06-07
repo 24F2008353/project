@@ -20,6 +20,10 @@ app.add_middleware(
 @app.get("/")
 def health():
     return {"status": "ok"}
+
+@app.post("/api/latency")
+def analyze_latency(req: RequestBody):
+    return analyze(req)
     
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str):
