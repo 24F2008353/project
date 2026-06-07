@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pathlib import Path
 import json
 import math
 
@@ -9,13 +10,15 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST"],
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-with open("q-vercel-latency.json", "r") as f:
-    DATA = json.load(f)
+DATA_FILE = Path(__file__).parent.parent / "q-vercel-latency.json"
 
+with open(DATA_FILE, "r", encoding="utf-8") as f:
+    DATA = json.load(f)
 class RequestBody(BaseModel):
     regions: list[str]
     threshold_ms: float
