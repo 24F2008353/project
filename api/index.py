@@ -56,22 +56,19 @@ def percentile_95(values):
     
 @app.post("/")
 def analyze(req: RequestBody):
-    result = {}
+    result = []
 
-    for region in req.regions:
-        rows = [r for r in DATA if r["region"] == region]
+for region in req.regions:
+    ...
+    result.append({
+        "region": region,
+        "avg_latency": round(sum(latencies) / len(latencies), 2),
+        "p95_latency": round(percentile_95(latencies), 2),
+        "avg_uptime": round(sum(uptimes) / len(uptimes), 3),
+        "breaches": sum(
+            1 for r in rows
+            if r["latency_ms"] > req.threshold_ms
+        )
+    })
 
-        latencies = [r["latency_ms"] for r in rows]
-        uptimes = [r["uptime_pct"] for r in rows]
-
-        result[region] = {
-            "avg_latency": round(sum(latencies) / len(latencies), 2),
-            "p95_latency": round(percentile_95(latencies), 2),
-            "avg_uptime": round(sum(uptimes) / len(uptimes), 3),
-            "breaches": sum(
-                1 for r in rows
-                if r["latency_ms"] > req.threshold_ms
-            )
-        }
-
-    return result
+return result
