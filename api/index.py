@@ -27,6 +27,10 @@ def percentile_95(values):
     values = sorted(values)
     k = math.ceil(0.95 * len(values)) - 1
     return values[max(0, min(k, len(values)-1))]
+    
+@app.options("/{path:path}")
+def options_handler(path: str):
+    return {}
 
 @app.post("/")
 def analyze(req: RequestBody):
