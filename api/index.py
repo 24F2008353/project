@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from pathlib import Path
 import json
 import math
+from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -14,6 +16,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def health():
+    return {"status": "ok"}
+    
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
+    )
 
 DATA_FILE = Path(__file__).parent.parent / "q-vercel-latency.json"
 
@@ -28,10 +45,6 @@ def percentile_95(values):
     k = math.ceil(0.95 * len(values)) - 1
     return values[max(0, min(k, len(values)-1))]
     
-@app.options("/{path:path}")
-def options_handler(path: str):
-    return {}
-
 @app.post("/")
 def analyze(req: RequestBody):
     result = {}
