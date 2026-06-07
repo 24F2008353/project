@@ -17,6 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class RequestBody(BaseModel):
+    regions: list[str]
+    threshold_ms: float
+
 @app.get("/")
 def health():
     return {"status": "ok"}
@@ -40,9 +44,6 @@ DATA_FILE = Path(__file__).parent.parent / "q-vercel-latency.json"
 
 with open(DATA_FILE, "r", encoding="utf-8") as f:
     DATA = json.load(f)
-class RequestBody(BaseModel):
-    regions: list[str]
-    threshold_ms: float
 
 def percentile_95(values):
     values = sorted(values)
