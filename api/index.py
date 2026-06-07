@@ -28,6 +28,10 @@ def health():
 @app.post("/api/latency")
 def analyze_latency(req: RequestBody):
     return analyze(req)
+
+@app.get("/api/latency")
+def latency_get():
+    return {"status": "ok"}
     
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str):
